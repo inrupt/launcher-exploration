@@ -17,7 +17,7 @@
     "react-dom": "^16.11.0",
     "react-scripts": "^3.1.2",
     "solid-auth-client": "^2.3.1",
-    "tripledoc": "github:michielbdejong/tripledoc",
+    "tripledoc": "^2.2.0",
     "tripledoc-solid-helpers": "^0.1.2",
     "typescript": "^3.6.3"
   },
