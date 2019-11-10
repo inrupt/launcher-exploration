@@ -1,2 +1,2 @@
-# launcher-app-exploration
-Exploration of how a Solid Launcher App could work
+# empty-solid-app
+Empty Solid app (Bulma+React+TripleDoc)
