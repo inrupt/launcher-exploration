@@ -10,10 +10,9 @@ export async function getTrustedApps(webId: string) {
   const profileDoc = await fetchDocument(webId);
   const subject = profileDoc.getSubject(webId);
   console.log('getting trusted apps', subject);
-  const trustedAppBlankNodes = subject.getAllNodeRefs(acl.trustedApp);
+  const trustedAppBlankNodes = subject.getAllLocalSubjects(acl.trustedApp);
   console.log(trustedAppBlankNodes);
-  return trustedAppBlankNodes.map(nodeRef => {
-    const node = profileDoc.getSubject(nodeRef);
-    return node.getNodeRef(acl.origin)
+  return trustedAppBlankNodes.map(trustedApp => {
+    return trustedApp.getRef(acl.origin)
   });
 }
