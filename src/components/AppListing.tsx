@@ -1,7 +1,8 @@
 import React from 'react';
 import { Listing } from '../availableApps';
-import { Card, CardHeader, CardActions, Button, Typography, CardContent } from '@material-ui/core';
+import { Card, CardHeader, CardActions,  Typography, CardContent } from '@material-ui/core';
 import { Screenshot } from './Screenshot';
+import { LaunchButton } from './LaunchButton';
 
 interface Props {
   listing: Listing;
@@ -18,12 +19,7 @@ export const AppListing: React.FC<Props> = (props) => {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button
-          href={props.listing.url}
-          title={`Launch ${props.listing.name}`}
-        >
-          Launch
-        </Button>
+        <LaunchButton listing={props.listing}/>
       </CardActions>
     </Card>
   );
