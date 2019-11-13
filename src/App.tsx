@@ -1,9 +1,11 @@
 import React from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
+import { AppBar, Typography, Toolbar, createMuiTheme, Button } from '@material-ui/core';
+import { ThemeProvider, makeStyles, createStyles } from '@material-ui/styles';
+import { LoggedIn, LoggedOut } from '@solid/react';
+import SolidAuth from 'solid-auth-client';
 import { AppStore } from './components/AppStore';
-import { AppBar, Typography, Toolbar, createMuiTheme } from '@material-ui/core';
-import { ThemeProvider } from '@material-ui/styles';
 
 const theme = createMuiTheme(
   {
@@ -14,16 +16,32 @@ const theme = createMuiTheme(
   },
 );
 
+const useStyles = makeStyles((theme) =>
+  createStyles({
+    title: {
+      flexGrow: 1,
+    },
+  }),
+);
+
 const App: React.FC = () => {
+  const classes = useStyles();
+
   return <>
     <React.StrictMode>
       <ThemeProvider theme={theme}>
         <CssBaseline/>
         <AppBar position="static">
           <Toolbar>
-            <Typography variant="h6">
+            <Typography className={classes.title} variant="h6">
               Solid apps
             </Typography>
+            <LoggedOut>
+              <Button color="inherit" onClick={() => SolidAuth.popupLogin({ popupUri: 'popup.html' })}>Log in</Button>
+            </LoggedOut>
+            <LoggedIn>
+              <Button color="inherit" onClick={() => SolidAuth.logout()}>Log out</Button>
+            </LoggedIn>
           </Toolbar>
         </AppBar>
         <Container>
