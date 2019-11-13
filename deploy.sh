@@ -1,10 +1,11 @@
 git checkout deploy
-git merge -
+git fetch origin
+git merge origin/master
 npm run build
 cd build
 ln -s index.html 404.html
 cd ..
-git add --force build
+git add build
 git commit --no-verify -am"build"
-git push
+git push 5apps deploy:master
 git checkout -
