@@ -1,6 +1,7 @@
 import React from 'react';
 import { Listing } from '../availableApps';
 import { Card, CardHeader, CardActions, Button, Typography, CardContent } from '@material-ui/core';
+import { Screenshot } from './Screenshot';
 
 interface Props {
   listing: Listing;
@@ -9,6 +10,7 @@ interface Props {
 export const AppListing: React.FC<Props> = (props) => {
   return (
     <Card>
+      <Screenshot id={props.listing.screenshot}/>
       <CardHeader title={props.listing.name}/>
       <CardContent>
         <Typography variant="subtitle1">

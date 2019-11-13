@@ -11,6 +11,7 @@ export interface Listing {
   url: string;
   name: string;
   tagline: string;
+  screenshot?: string;
   requirements?: Requirement[];
 };
 
@@ -30,6 +31,7 @@ export const availableApps: Listing[] = [
     name: 'Poddit',
     tagline: 'Private bookmarking',
     url: 'https://vincenttunru.gitlab.io/poddit',
+    screenshot: 'poddit',
     requirements: [
       {
         forClass: 'http://www.w3.org/2002/01/bookmark#Bookmark',
