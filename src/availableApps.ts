@@ -1,5 +1,6 @@
 import { Reference } from 'tripledoc';
 import { acl, schema } from 'rdf-namespaces';
+import { initialiseNotesList, initialiseBookmarksList } from './services/preparePod/preparePodForApp';
 
 export interface ClassFileRequirement {
   forClass: Reference;
@@ -8,29 +9,48 @@ export interface ClassFileRequirement {
 export type Requirement = ClassFileRequirement;
 
 export interface Listing {
-  url: string;
+  appOrigin: string;
+  launchUrl: string;
   name: string;
   tagline: string;
   screenshot?: string;
   requirements?: Requirement[];
+  script?: string;
+  podWidePermissions: string[];
 };
+
+export const scripts: { [i: string]: (appOrigin: string, podWidePermissions: string[]) => Promise<void> } = {
+  initialiseNotesList,
+  initialiseBookmarksList
+}
+
+export async function runPrepareScript (scriptName: string | undefined, appOrigin: string, podWidePermissions: string[]): Promise<void> {
+  if (!scriptName) {
+    return;
+  }
+  return scripts[scriptName](appOrigin, podWidePermissions);
+}
 
 export const availableApps: Listing[] = [
   {
     name: 'Notepod',
     tagline: 'A note-taking app for Solid',
-    url: 'https://notepod.vincenttunru.com/',
+    appOrigin: 'https://notepod.vincenttunru.com',
+    launchUrl: 'https://notepod.vincenttunru.com/',
     requirements: [
       {
         forClass: schema.TextDigitalDocument,
-        requiredModes: [acl.Read, acl.Append, acl.Write],
+        requiredModes: []
       },
     ],
+    script: 'initialiseNotesList',
+    podWidePermissions: []
   },
   {
     name: 'Poddit',
     tagline: 'Private bookmarking',
-    url: 'https://vincenttunru.gitlab.io/poddit',
+    appOrigin: 'https://vincenttunru.gitlab.io',
+    launchUrl: 'https://vincenttunru.gitlab.io/poddit',
     screenshot: 'poddit',
     requirements: [
       {
@@ -38,6 +58,8 @@ export const availableApps: Listing[] = [
         requiredModes: [acl.Read, acl.Append, acl.Write],
       },
     ],
+    script: 'initialiseBookmarksList',
+    podWidePermissions: [],
   },
 ];
 
