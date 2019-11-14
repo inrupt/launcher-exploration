@@ -16,3 +16,15 @@ export async function getTrustedApps(webId: string) {
     return trustedApp.getRef(acl.origin)
   });
 }
+
+export async function addTrustedApp(webId: string, appOrigin: string, modes: string[]) {
+  const profileDoc = await fetchDocument(webId);
+  const subject = profileDoc.getSubject(webId);
+  const trustNode = profileDoc.addSubject();
+  subject.addRef(acl.trustedApp, trustNode.asRef());
+  trustNode.addRef(acl.origin, appOrigin);
+  modes.forEach((mode: string) => {
+    trustNode.addRef(acl.mode, mode);
+  });
+  await profileDoc.save();
+}

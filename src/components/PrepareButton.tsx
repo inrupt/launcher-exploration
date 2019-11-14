@@ -10,7 +10,7 @@ interface Props {
 export const PrepareButton: React.FC<Props> = (props) => {
   const prepareButton = (
     <Button
-      onClick={() => runPrepareScript(props.listing.script, props.listing.appOrigin)}
+      onClick={() => runPrepareScript(props.listing.script, props.listing.appOrigin, props.listing.podWidePermissions)}
       title={`Prepare your pod for ${props.listing.name}`}
     >
       Prepare

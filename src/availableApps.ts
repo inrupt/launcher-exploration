@@ -1,6 +1,6 @@
 import { Reference } from 'tripledoc';
 import { acl, schema } from 'rdf-namespaces';
-import { initialiseNotesList } from './services/preparePod/initialiseNotesList';
+import { initialiseNotesList, initialiseBookmarksList } from './services/preparePod/preparePodForApp';
 
 export interface ClassFileRequirement {
   forClass: Reference;
@@ -16,17 +16,19 @@ export interface Listing {
   screenshot?: string;
   requirements?: Requirement[];
   script?: string;
+  podWidePermissions: string[];
 };
 
-export const scripts: { [i: string]: (appOrigin: string) => Promise<void> } = {
-  initialiseNotesList
+export const scripts: { [i: string]: (appOrigin: string, podWidePermissions: string[]) => Promise<void> } = {
+  initialiseNotesList,
+  initialiseBookmarksList
 }
 
-export async function runPrepareScript (scriptName: string | undefined, appOrigin: string): Promise<void> {
+export async function runPrepareScript (scriptName: string | undefined, appOrigin: string, podWidePermissions: string[]): Promise<void> {
   if (!scriptName) {
     return;
   }
-  return scripts[scriptName](appOrigin);
+  return scripts[scriptName](appOrigin, podWidePermissions);
 }
 
 export const availableApps: Listing[] = [
@@ -41,7 +43,8 @@ export const availableApps: Listing[] = [
         requiredModes: []
       },
     ],
-    script: 'initialiseNotesList'
+    script: 'initialiseNotesList',
+    podWidePermissions: []
   },
   {
     name: 'Poddit',
@@ -55,6 +58,8 @@ export const availableApps: Listing[] = [
         requiredModes: [acl.Read, acl.Append, acl.Write],
       },
     ],
+    script: 'initialiseBookmarksList',
+    podWidePermissions: [],
   },
 ];
 
