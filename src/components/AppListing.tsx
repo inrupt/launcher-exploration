@@ -8,7 +8,7 @@ interface Props {
   listing: Listing;
 };
 
-export const AppListing: React.FC<Props> = (props) => {
+export const AppListing: React.FC<Props> = (props: Props) => {
   return (
     <Card>
       <Screenshot id={props.listing.screenshot}/>
