@@ -21,6 +21,8 @@ export const LaunchButton: React.FC<Props> = (props) => {
       <Button
         href={props.listing.url}
         title={`Launch ${props.listing.name}`}
+        color="primary"
+        variant="contained"
       >
         Launch
       </Button>
@@ -41,49 +43,12 @@ export const LaunchButton: React.FC<Props> = (props) => {
         <Button
           href={props.listing.url}
           title={`Launch ${props.listing.name}`}
-          onClick={handleClick}
+          onClick={(event) => { event.preventDefault(); connectAndLaunch(props.listing); }}
+          color="primary"
+          variant="contained"
         >
-          Launch
+          Connect and launch
         </Button>
-        <Popover
-          anchorEl={popoverTrigger}
-          open={popoverTrigger !== null}
-          onClose={() => setPopoverTrigger(null)}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
-          }}
-        >
-          <Card>
-            <CardActionArea
-              onClick={(event) => { event.preventDefault(); connectAndLaunch(props.listing); }}
-            >
-              <CardHeader
-                title={
-                  <Typography variant="h6" component="h3">
-                    <b>{props.listing.name}</b> needs access to your Pod.
-                  </Typography>
-                }
-              />
-              <CardContent>
-                <Typography>
-                  Connect to your Pod and allow {props.listing.name} to:
-                  <ul>
-                    <li>Write data to your Pod</li>
-                  </ul>
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-            <CardActions>
-              <Button
-                href="https://solidproject.org/use-solid"
-                size="small"
-              >
-                I don't have a Pod
-              </Button>
-            </CardActions>
-          </Card>
-        </Popover>
       </LoggedOut>
       <LoggedIn>
         {/* TODO: Check if this app's requirements are already satisfied. */}
@@ -91,8 +56,10 @@ export const LaunchButton: React.FC<Props> = (props) => {
         <Button
           href={props.listing.url}
           title={`Launch ${props.listing.name}`}
+          color="primary"
+          variant="contained"
         >
-          Launch
+          Allow and launch
         </Button>
       </LoggedIn>
     </>
