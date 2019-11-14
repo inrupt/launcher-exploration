@@ -5,39 +5,49 @@ import { initialiseNotesList } from './services/preparePod/initialiseNotesList';
 export interface ClassFileRequirement {
   forClass: Reference;
   requiredModes: Array<typeof acl.Read | typeof acl.Append | typeof acl.Write | typeof acl.Control>;
-  script?: string;
 };
 export type Requirement = ClassFileRequirement;
 
 export interface Listing {
-  url: string;
+  appOrigin: string;
+  launchUrl: string;
   name: string;
   tagline: string;
   screenshot?: string;
   requirements?: Requirement[];
+  script?: string;
 };
 
-export const scripts: { [i: string]: () => Promise<void> } = {
+export const scripts: { [i: string]: (appOrigin: string) => Promise<void> } = {
   initialiseNotesList
+}
+
+export async function runPrepareScript (scriptName: string | undefined, appOrigin: string): Promise<void> {
+  if (!scriptName) {
+    return;
+  }
+  return scripts[scriptName](appOrigin);
 }
 
 export const availableApps: Listing[] = [
   {
     name: 'Notepod',
     tagline: 'A note-taking app for Solid',
-    url: 'https://notepod.vincenttunru.com/',
+    appOrigin: 'https://notepod.vincenttunru.com',
+    launchUrl: 'https://notepod.vincenttunru.com/',
     requirements: [
       {
         forClass: schema.TextDigitalDocument,
-        requiredModes: [],
-        script: 'initialiseNotesList'
+        requiredModes: []
       },
     ],
+    script: 'initialiseNotesList'
   },
   {
     name: 'Poddit',
     tagline: 'Private bookmarking',
-    url: 'https://vincenttunru.gitlab.io/poddit',
+    appOrigin: 'https://vincenttunru.gitlab.io',
+    launchUrl: 'https://vincenttunru.gitlab.io/poddit',
     screenshot: 'poddit',
     requirements: [
       {

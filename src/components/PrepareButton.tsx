@@ -1,5 +1,5 @@
 import React from 'react';
-import { Listing } from '../availableApps';
+import { Listing, runPrepareScript } from '../availableApps';
 import { Button } from '@material-ui/core';
 import { LoggedOut, LoggedIn } from '@solid/react';
 
@@ -7,26 +7,26 @@ interface Props {
   listing: Listing;
 };
 
-export const LaunchButton: React.FC<Props> = (props) => {
-  const launchButton = (
+export const PrepareButton: React.FC<Props> = (props) => {
+  const prepareButton = (
     <Button
-      href={props.listing.launchUrl}
-      title={`Launch ${props.listing.name}`}
+      onClick={() => runPrepareScript(props.listing.script, props.listing.appOrigin)}
+      title={`Prepare your pod for ${props.listing.name}`}
     >
-      Launch
+      Prepare
     </Button>
   );
   if (!props.listing.requirements || props.listing.requirements.length === 0) {
-    return launchButton;
+    return prepareButton;
   }
 
   return (
     <>
       <LoggedOut>
-        Log in to launch
+        Log in to prepare
       </LoggedOut>
       <LoggedIn>
-        {launchButton}
+        {prepareButton}
       </LoggedIn>
     </>
   );
