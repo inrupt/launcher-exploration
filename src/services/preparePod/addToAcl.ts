@@ -1,35 +1,15 @@
 import { TripleDocument, fetchDocument, createDocument } from 'tripledoc';
-import { rdf, acl } from 'rdf-namespaces';
+import { rdf, acl, foaf } from 'rdf-namespaces';
+import { Modes } from '../../availableApps';
 
-function addAuthorization(args: {
-  document: TripleDocument,
-  aclDoc: TripleDocument,
-  webId: string,
-  appOrigin: string,
-  party: string,
-  modes: string[]
-}) {
-  const authorizationSubject = args.aclDoc.addSubject();
-  authorizationSubject.addNodeRef(rdf.type, acl.Authorization);
-  authorizationSubject.addNodeRef(acl.accessTo, args.document.asNodeRef());
-  args.modes.forEach((mode) => {
-    authorizationSubject.addNodeRef(acl.mode, mode);
-  });
-  if (args.party === 'public') {
-    authorizationSubject.addNodeRef(acl.agent, args.webId);
-  } else {
-    authorizationSubject.addNodeRef(acl.agent, args.webId);
-  }
-  if (args.party === 'app') {
-    authorizationSubject.addNodeRef(acl.origin, args.appOrigin);
-  }
-}
+export type AclParty = 
+    { type: 'public', modes: Modes[] } |
+    { type: 'webid', modes: Modes[], webid: string } |
+    { type: 'app', modes: Modes[], origin: string };
 
 export async function addAppToAcl (
   document: TripleDocument,
-  webId: string,
-  appOrigin: string,
-  modes: { [party: string]: string[] }
+  parties: AclParty[],
 ) {
   const aclRef = document.getAclRef();
   if (!aclRef) {
@@ -44,8 +24,22 @@ export async function addAppToAcl (
   if (!aclDoc) {
     throw new Error('could not create in-memory version of the ACL doc');
   }
-  for (let party in modes) {
-    addAuthorization({ document, aclDoc, webId, appOrigin, party, modes: modes[party] });
-  }
+
+  parties.forEach((party) => {
+    const authorizationSubject = aclDoc.addSubject();
+    authorizationSubject.addRef(rdf.type, acl.Authorization);
+    authorizationSubject.addRef(acl.accessTo, document.asRef());
+    party.modes.forEach((mode) => {
+      authorizationSubject.addRef(acl.mode, mode);
+    });
+    if (party.type === 'public') {
+      authorizationSubject.addRef(acl.agentClass, foaf.Agent);
+    } else if (party.type === 'webid') {
+      authorizationSubject.addRef(acl.agent, party.webid);
+    } else if (party.type === 'app') {
+      authorizationSubject.addRef(acl.origin, party.origin);
+    }
+  });
+
   await aclDoc.save();
 }

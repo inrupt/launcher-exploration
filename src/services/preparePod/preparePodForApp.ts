@@ -1,25 +1,27 @@
-import { space, schema, acl, solid } from 'rdf-namespaces';
+import { space, acl, solid } from 'rdf-namespaces';
 import { createDocument, fetchDocument, TripleDocument, TripleSubject } from 'tripledoc';
 import { addToTypeIndex } from './addToTypeIndex';
-import { addAppToAcl } from './addToAcl';
+import { addAppToAcl, AclParty } from './addToAcl';
 import SolidAuth, { Session as SolidAuthSession } from 'solid-auth-client';
 import { addTrustedApp } from '../getTrustedApps';
+import { ClassFileRequirement, Requirement, isClassFileRequirement } from '../../availableApps';
 
-export async function initialiseSingleDocApp (args: {
-  appOrigin: string,
-  modes: { [party: string]: string[] },
-  typeIndexPublic: boolean,
-  rdfType: string,
-  defaultLocation: string,
-  podWidePermissions: string[]
-}): Promise<void> {
+export async function preparePodForApp(origin: string, requirements: Requirement) {
+  if (isClassFileRequirement(requirements)) {
+    return initialiseClassFile(origin, requirements);
+  }
+
+  throw new Error('This app has a set of requirements we do not know how to fulfil yet.');
+}
+
+export async function initialiseClassFile (origin: string, requirements: ClassFileRequirement): Promise<void> {
   const currentSession: SolidAuthSession = await SolidAuth.currentSession() || (() => {throw new Error('not logged in!')})();
   const webId: string = currentSession.webId;
-  await addTrustedApp(webId, args.appOrigin, args.podWidePermissions);
+  await addTrustedApp(webId, origin, []);
   const webIdDoc: TripleDocument = await fetchDocument(webId) || (() => {throw new Error('no webIdDoc!')})();
   const profile: TripleSubject = webIdDoc.getSubject(webId) || (() => {throw new Error('no profile!')})();
   let typeIndexUrl: string;
-  if (args.typeIndexPublic) {
+  if (requirements.public === true) {
     typeIndexUrl = profile.getRef(solid.publicTypeIndex) || (() => {throw new Error('no public type index linked!')})();
   } else {
     typeIndexUrl = profile.getRef(solid.privateTypeIndex) || (() => {throw new Error('no private type index linked!')})();
@@ -27,39 +29,19 @@ export async function initialiseSingleDocApp (args: {
   const typeIndexDoc: TripleDocument = await fetchDocument(typeIndexUrl) || (() => {throw new Error('requested type index not found!')})();
   const storage: string = profile.getRef(space.storage) || (() => {throw new Error('no storage!')})();
 
-  const dataDocRef = storage + args.defaultLocation;
+  // TODO: Only create this file if it does not exist yet:
+  const filename = requirements.defaultFilename.replace(/\.ttl$/i, '') + '.ttl';
+  const dataDocRef = storage + filename;
   const dataDoc = createDocument(dataDocRef);
   await dataDoc.save();
-  await addToTypeIndex(typeIndexDoc, dataDoc, args.rdfType);
-  await addAppToAcl(dataDoc, webId, args.appOrigin, args.modes);
-}
+  await addToTypeIndex(typeIndexDoc, dataDoc, requirements.forClass);
 
-export async function initialiseNotesList (appOrigin: string, podWidePermissions: string[]): Promise<void> {
-  return initialiseSingleDocApp({
-    appOrigin,
-    modes: {
-      owner: [ acl.Read, acl.Write, acl.Control ],
-      app: [ acl.Read, acl.Write ],
-      public: [ acl.Read ]
-    },
-    typeIndexPublic: true,
-    rdfType: schema.TextDigitalDocument,
-    defaultLocation: 'notes.ttl',
-    podWidePermissions
-  });
-}
-
-export async function initialiseBookmarksList (appOrigin: string, podWidePermissions: string[]): Promise<void> {
-  return initialiseSingleDocApp({
-    appOrigin,
-    modes: {
-      owner: [ acl.Read, acl.Write, acl.Control ],
-      app: [ acl.Read, acl.Write ],
-      public: [ acl.Read ]
-    },
-    typeIndexPublic: true,
-    rdfType: 'http://www.w3.org/2002/01/bookmark#Bookmark',
-    defaultLocation: 'bookmarks.ttl',
-    podWidePermissions
-  });
+  const aclParties: AclParty[] = [
+    { type: 'webid', modes: [acl.Read, acl.Write, acl.Control], webid: webId },
+    { type: 'app', modes: [acl.Read, acl.Write], origin: origin },
+  ];
+  if (requirements.public) {
+    aclParties.push({ type: 'public', modes: [acl.Read] });
+  }
+  await addAppToAcl(dataDoc, aclParties);
 }

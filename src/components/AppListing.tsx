@@ -1,10 +1,8 @@
 import React from 'react';
 import { Listing } from '../availableApps';
-import { Card, CardHeader, CardActions,  Typography, CardContent, Divider, Button } from '@material-ui/core';
+import { Card, CardHeader, CardActions,  Typography, CardContent, Button } from '@material-ui/core';
 import { Screenshot } from './Screenshot';
 import { LaunchButton } from './LaunchButton';
-import { PrepareButton } from './PrepareButton';
-import { LoggedOut } from '@solid/react';
 
 interface Props {
   listing: Listing;
@@ -16,14 +14,14 @@ export const AppListing: React.FC<Props> = (props: Props) => {
 
   const requirementsOverview = (requirementsFulfilled)
     ? null
-    : (<Typography>
-      <p>
+    : (<>
+      <Typography>
         {props.listing.name} will get permission to:
-      </p>
+      </Typography>
       <ul>
-        <li>Write data to your Pod</li>
+        <li><Typography>Write data to your Pod</Typography></li>
       </ul>
-    </Typography>);
+    </>);
 
   return (
     <Card>
@@ -31,14 +29,11 @@ export const AppListing: React.FC<Props> = (props: Props) => {
       <CardHeader title={props.listing.name}/>
       <CardContent>
         <Typography variant="subtitle1">
-          <p>
-            {props.listing.tagline}
-          </p>
+          {props.listing.tagline}
         </Typography>
         {requirementsOverview}
       </CardContent>
       <CardActions>
-        <PrepareButton listing={props.listing}/>
         <LaunchButton listing={props.listing}/>
         <Button
           href="https://solidproject.org/use-solid"
