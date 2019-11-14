@@ -1,9 +1,11 @@
 import { Reference } from 'tripledoc';
 import { acl, schema } from 'rdf-namespaces';
+import { initialiseNotesList } from './services/preparePod/initialiseNotesList';
 
 export interface ClassFileRequirement {
   forClass: Reference;
   requiredModes: Array<typeof acl.Read | typeof acl.Append | typeof acl.Write | typeof acl.Control>;
+  script?: string;
 };
 export type Requirement = ClassFileRequirement;
 
@@ -15,6 +17,10 @@ export interface Listing {
   requirements?: Requirement[];
 };
 
+export const scripts: { [i: string]: () => Promise<void> } = {
+  initialiseNotesList
+}
+
 export const availableApps: Listing[] = [
   {
     name: 'Notepod',
@@ -23,7 +29,8 @@ export const availableApps: Listing[] = [
     requirements: [
       {
         forClass: schema.TextDigitalDocument,
-        requiredModes: [acl.Read, acl.Append, acl.Write],
+        requiredModes: [],
+        script: 'initialiseNotesList'
       },
     ],
   },
