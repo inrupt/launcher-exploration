@@ -18,6 +18,7 @@ export async function getTrustedApps(webId: string) {
 }
 
 export async function addTrustedApp(webId: string, appOrigin: string, modes: string[]) {
+  // TODO: Only add if not present yet
   const profileDoc = await fetchDocument(webId);
   const subject = profileDoc.getSubject(webId);
   const trustNode = profileDoc.addSubject();

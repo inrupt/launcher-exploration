@@ -25,6 +25,7 @@ export async function addAppToAcl (
     throw new Error('could not create in-memory version of the ACL doc');
   }
 
+  // TODO: Only add if not present yet
   parties.forEach((party) => {
     const authorizationSubject = aclDoc.addSubject();
     authorizationSubject.addRef(rdf.type, acl.Authorization);

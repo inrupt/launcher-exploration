@@ -34,7 +34,7 @@ export const LaunchButton: React.FC<Props> = (props) => {
       const origin = new URL(listing.launchUrl).origin;
       await Promise.all(props.listing.requirements.map(requirement => preparePodForApp(origin, requirement)));
     }
-    debugger;
+    // TODO: Pass the user's WebID to the app:
     document.location.href = listing.launchUrl;
   }
 
