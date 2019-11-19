@@ -1,6 +1,7 @@
 import React from 'react';
-import { Listing } from '../availableApps';
 import { Card, CardHeader, CardActions,  Typography, CardContent, Button } from '@material-ui/core';
+import { LoggedOut } from '@solid/react';
+import { Listing } from '../availableApps';
 import { Screenshot } from './Screenshot';
 import { LaunchButton } from './LaunchButton';
 
@@ -35,10 +36,12 @@ export const AppListing: React.FC<Props> = (props: Props) => {
       </CardContent>
       <CardActions>
         <LaunchButton listing={props.listing}/>
-        <Button
-          href="https://solidproject.org/use-solid"
-          title="Get a Solid Pod"
-        >I don't have a Pod</Button>
+        <LoggedOut>
+          <Button
+            href="https://solidproject.org/use-solid"
+            title="Get a Solid Pod"
+          >I don't have a Pod</Button>
+        </LoggedOut>
       </CardActions>
     </Card>
   );
