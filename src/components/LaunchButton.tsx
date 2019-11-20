@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@material-ui/core';
 import SolidAuth from 'solid-auth-client';
-import { LoggedOut, LoggedIn } from '@solid/react';
+import { LoggedOut, LoggedIn, useWebId } from '@solid/react';
 import { Listing } from '../availableApps';
 import { preparePodForApp } from '../services/preparePod/preparePodForApp';
 
@@ -10,6 +10,7 @@ interface Props {
 };
 
 export const LaunchButton: React.FC<Props> = (props) => {
+  const webId = useWebId();
   if (!props.listing.requirements || props.listing.requirements.length === 0) {
     return (
       <Button
@@ -34,8 +35,12 @@ export const LaunchButton: React.FC<Props> = (props) => {
       const origin = new URL(listing.launchUrl).origin;
       await Promise.all(props.listing.requirements.map(requirement => preparePodForApp(origin, requirement)));
     }
-    // TODO: Pass the user's WebID to the app:
-    document.location.href = listing.launchUrl;
+
+    const urlToRedirectTo = new URL(listing.launchUrl);
+    if (webId) {
+      urlToRedirectTo.searchParams.append('webid', webId);
+    }
+    document.location.href = urlToRedirectTo.href;
   }
 
   return (
