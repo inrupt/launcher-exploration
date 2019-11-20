@@ -17,7 +17,6 @@ export async function getTrustedApps(webId: string) {
 }
 
 export async function addTrustedApp(webId: string, appOrigin: string, modes: Reference[]) {
-  debugger;
   const alreadyTrustedApps = await getTrustedApps(webId);
   if (alreadyTrustedApps.some(isTrustedApp(appOrigin, modes))) {
     // Do not add this trusted app if it's already listed.
