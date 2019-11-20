@@ -19,6 +19,12 @@ export function isClassFileRequirement(r: Requirement): r is ClassFileRequiremen
 export function isPodWideRequirement(r: Requirement): r is PodWideRequirement {
   return (typeof (r as PodWideRequirement).podWidePemissions !== 'undefined');
 }
+/**
+ * This can be used to have TypeScript warn you when another type is added to [[Requirement]]
+ */
+export function isExhaustive(_typeToCheck: never): never {
+  throw new Error('Did not check for all possible values of a type.');
+}
 
 export interface Listing {
   launchUrl: string;
@@ -52,6 +58,16 @@ export const availableApps: Listing[] = [
         requiredModes: [acl.Read, acl.Append, acl.Write],
         defaultFilename: 'bookmarks',
         public: true,
+      },
+    ],
+  },
+  {
+    name: 'Generator demo',
+    tagline: 'Output of inrupt\'s generator for Solid React Applications',
+    launchUrl: 'https://generator.inrupt.com/',
+    requirements: [
+      {
+        podWidePemissions: [acl.Read, acl.Append, acl.Write, acl.Control],
       },
     ],
   },

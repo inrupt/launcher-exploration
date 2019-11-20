@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardHeader, CardActions,  Typography, CardContent, Button } from '@material-ui/core';
 import { LoggedOut } from '@solid/react';
-import { Listing, Requirement, isClassFileRequirement, isPodWideRequirement } from '../availableApps';
+import { Listing, Requirement, isClassFileRequirement, isPodWideRequirement, isExhaustive } from '../availableApps';
 import { Screenshot } from './Screenshot';
 import { LaunchButton } from './LaunchButton';
 import { acl } from 'rdf-namespaces';
@@ -16,9 +16,6 @@ export const AppListing: React.FC<Props> = (props: Props) => {
   requirements
     .map(getHumanReadableRequirements)
     .forEach(readableReqs => readableRequirements.push(...readableReqs));
-    console.log(
-  requirements
-    .map(getHumanReadableRequirements));
 
   const requirementListItems = readableRequirements.map((readableRequirement, i) => (
     <li key={`requirement${i}`}>
@@ -77,7 +74,7 @@ function getHumanReadableRequirements(requirement: Requirement): JSX.Element[] {
   if (isPodWideRequirement(requirement)) {
     if (requirement.podWidePemissions.includes(acl.Write) || requirement.podWidePemissions.includes(acl.Control)) {
       return [
-        <>Change all data in your Pod</>,
+        <>Change and delete all data in your Pod</>,
       ];
     }
     if (requirement.podWidePemissions.includes(acl.Append)) {
@@ -91,10 +88,4 @@ function getHumanReadableRequirements(requirement: Requirement): JSX.Element[] {
   }
 
   return isExhaustive(requirement);
-}
-
-// This will make sure that TypeScript will tell us when we add another type to an alias
-// that we haven't yet accounted for:
-export function isExhaustive(_typeToCheck: never): never {
-  throw new Error('Did not check for all possible values of a type.');
 }

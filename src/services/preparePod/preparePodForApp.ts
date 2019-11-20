@@ -4,17 +4,26 @@ import { addToTypeIndex } from './addToTypeIndex';
 import { addAppToAcl, AclParty } from './addToAcl';
 import SolidAuth, { Session as SolidAuthSession } from 'solid-auth-client';
 import { addTrustedApp } from '../getTrustedApps';
-import { ClassFileRequirement, Requirement, isClassFileRequirement } from '../../availableApps';
+import { ClassFileRequirement, Requirement, isClassFileRequirement, isExhaustive, isPodWideRequirement, PodWideRequirement } from '../../availableApps';
 
 export async function preparePodForApp(origin: string, requirements: Requirement) {
   if (isClassFileRequirement(requirements)) {
     return initialiseClassFile(origin, requirements);
   }
+  if (isPodWideRequirement(requirements)) {
+    return initialiseTrustedApps(origin, requirements);
+  }
 
-  throw new Error('This app has a set of requirements we do not know how to fulfil yet.');
+  return isExhaustive(requirements);
 }
 
-export async function initialiseClassFile (origin: string, requirements: ClassFileRequirement): Promise<void> {
+async function initialiseTrustedApps (origin: string, requirements: PodWideRequirement) {
+  const currentSession: SolidAuthSession = await SolidAuth.currentSession() || (() => {throw new Error('not logged in!')})();
+  const webId: string = currentSession.webId;
+  await addTrustedApp(webId, origin, requirements.podWidePemissions);
+}
+
+async function initialiseClassFile (origin: string, requirements: ClassFileRequirement): Promise<void> {
   const currentSession: SolidAuthSession = await SolidAuth.currentSession() || (() => {throw new Error('not logged in!')})();
   const webId: string = currentSession.webId;
 
