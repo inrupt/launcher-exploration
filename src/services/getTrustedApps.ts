@@ -1,4 +1,5 @@
-import { fetchDocument } from 'tripledoc';
+import { getDocument } from './documentCache';
+import { Reference, TripleSubject } from 'tripledoc';
 // import { acl } from 'rdf-namespaces';
 const acl = {
   trustedApp: 'http://www.w3.org/ns/auth/acl#trustedApp',
@@ -7,19 +8,24 @@ const acl = {
 };
 
 export async function getTrustedApps(webId: string) {
-  const profileDoc = await fetchDocument(webId);
+  const profileDoc = await getDocument(webId);
   const subject = profileDoc.getSubject(webId);
-  console.log('getting trusted apps', subject);
   const trustedAppBlankNodes = subject.getAllLocalSubjects(acl.trustedApp);
-  console.log(trustedAppBlankNodes);
-  return trustedAppBlankNodes.map(trustedApp => {
-    return trustedApp.getRef(acl.origin)
-  });
+  const trustedAppNamedNodes = subject.getAllRefs(acl.trustedApp).map((ref) => profileDoc.getSubject(ref));
+  const trustedApps = trustedAppBlankNodes.concat(trustedAppNamedNodes);
+  return trustedApps;
 }
 
-export async function addTrustedApp(webId: string, appOrigin: string, modes: string[]) {
-  // TODO: Only add if not present yet
-  const profileDoc = await fetchDocument(webId);
+export async function addTrustedApp(webId: string, appOrigin: string, modes: Reference[]) {
+  debugger;
+  const alreadyTrustedApps = await getTrustedApps(webId);
+  if (alreadyTrustedApps.some(isTrustedApp(appOrigin, modes))) {
+    // Do not add this trusted app if it's already listed.
+    return;
+  }
+
+  // TODO: Set the correct modes if this origin is already listed, but with different modes
+  const profileDoc = await getDocument(webId);
   const subject = profileDoc.getSubject(webId);
   const trustNode = profileDoc.addSubject();
   subject.addRef(acl.trustedApp, trustNode.asRef());
@@ -29,3 +35,12 @@ export async function addTrustedApp(webId: string, appOrigin: string, modes: str
   });
   await profileDoc.save();
 }
+
+function isTrustedApp(appOrigin: string, modes: Reference[]) {
+  return (trustedApp: TripleSubject) => {
+    return (
+      trustedApp.getRef(acl.origin) === appOrigin &&
+      modes.every(mode => trustedApp.getAllRefs(acl.mode).includes(mode))
+    );
+  };
+};
