@@ -46,7 +46,6 @@ export const availableApps: Listing[] = [
     name: 'Poddit',
     tagline: 'Private bookmarking',
     launchUrl: 'https://poddit.app',
-    screenshot: 'poddit',
     requirements: [
       {
         forClass: 'http://www.w3.org/2002/01/bookmark#Bookmark',
