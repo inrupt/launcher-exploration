@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardHeader, CardActions,  Typography, CardContent, Button } from '@material-ui/core';
 import { LoggedOut } from '@solid/react';
-import { Listing, Requirement, isClassFileRequirement, isPodWideRequirement, isExhaustive } from '../availableApps';
+import { Listing, Requirement, isClassFileRequirement, isPodWideRequirement, isExhaustive, isContainerBoundRequirement } from '../availableApps';
 import { Screenshot } from './Screenshot';
 import { LaunchButton } from './LaunchButton';
 import { acl } from 'rdf-namespaces';
@@ -68,6 +68,22 @@ function getHumanReadableRequirements(requirement: Requirement): JSX.Element[] {
     }
     return [
       <>Read data of <abbr title={requirement.forClass}>a specific type</abbr> in your Pod.</>,
+    ];
+  }
+
+  if (isContainerBoundRequirement(requirement)) {
+    if (requirement.requiredModes.includes(acl.Write) || requirement.requiredModes.includes(acl.Control)) {
+      return [
+        <>Change and delete all data in the folder <code>{requirement.container}</code> on your Pod</>,
+      ];
+    }
+    if (requirement.requiredModes.includes(acl.Append)) {
+      return [
+        <>Add new data in the folder <code>{requirement.container}</code> on your Pod</>,
+      ];
+    }
+    return [
+      <>Read all data in the folder <code>{requirement.container}</code> on your Pod.</>,
     ];
   }
 

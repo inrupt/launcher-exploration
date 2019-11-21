@@ -4,7 +4,7 @@ import { addToTypeIndex } from './addToTypeIndex';
 import { addAppToAcl, AclParty } from './addToAcl';
 import SolidAuth, { Session as SolidAuthSession } from 'solid-auth-client';
 import { addTrustedApp } from '../getTrustedApps';
-import { ClassFileRequirement, Requirement, isClassFileRequirement, isExhaustive, isPodWideRequirement, PodWideRequirement } from '../../availableApps';
+import { ClassFileRequirement, Requirement, isClassFileRequirement, isExhaustive, isPodWideRequirement, PodWideRequirement, ContainerBoundrequirement, isContainerBoundRequirement } from '../../availableApps';
 
 export async function preparePodForApp(origin: string, requirements: Requirement) {
   if (isClassFileRequirement(requirements)) {
@@ -12,6 +12,9 @@ export async function preparePodForApp(origin: string, requirements: Requirement
   }
   if (isPodWideRequirement(requirements)) {
     return initialiseTrustedApps(origin, requirements);
+  }
+  if (isContainerBoundRequirement(requirements)) {
+    return intialiseContainer(origin, requirements);
   }
 
   return isExhaustive(requirements);
@@ -21,6 +24,40 @@ async function initialiseTrustedApps (origin: string, requirements: PodWideRequi
   const currentSession: SolidAuthSession = await SolidAuth.currentSession() || (() => {throw new Error('not logged in!')})();
   const webId: string = currentSession.webId;
   await addTrustedApp(webId, origin, requirements.podWidePemissions);
+}
+
+async function intialiseContainer (origin: Reference, requirements: ContainerBoundrequirement) {
+  const currentSession: SolidAuthSession = await SolidAuth.currentSession() || (() => {throw new Error('not logged in!')})();
+  const webId: string = currentSession.webId;
+
+  const webIdDoc: TripleDocument = await fetchDocument(webId) || (() => {throw new Error('no webIdDoc!')})();
+  const profile: TripleSubject = webIdDoc.getSubject(webId) || (() => {throw new Error('no profile!')})();
+  const storageRef = profile.getRef(space.storage);
+  if (!storageRef) { throw new Error('No storage location found') }
+
+  const containerRef = storageRef.replace(/\/$/, '') + '/' + requirements.container.replace(/^\//, '').replace(/\/$/, '') + '/';
+  const containerDoc = await ensureContainer(containerRef);
+
+  const aclParties: AclParty[] = [
+    { type: 'app', modes: requirements.requiredModes, origin: origin, webid: webId },
+  ];
+  await addAppToAcl(containerDoc, aclParties);
+}
+
+async function ensureContainer(containerRef: Reference): Promise<TripleDocument> {
+  try {
+    const existingContainer = await fetchDocument(containerRef);
+    return existingContainer;
+  } catch (e) {
+    // Container doesn't exist; continue to create it:
+  }
+
+  // Creating a container directly with a `PUT` request doesn't seem to work with Node Solid Server,
+  // so create a dummy file inside it that will implicitly lead to the creation of the Container.
+  // This approached is also used by the Inrupt Generator for Solid React Applications.
+  const newChild = createDocument(containerRef + '.dummy');
+  await newChild.save();
+  return fetchDocument(containerRef);
 }
 
 async function initialiseClassFile (origin: string, requirements: ClassFileRequirement): Promise<void> {

@@ -11,13 +11,20 @@ export interface ClassFileRequirement {
 export interface PodWideRequirement {
   podWidePemissions: Array<Modes>;
 }
-export type Requirement = ClassFileRequirement | PodWideRequirement;
+export interface ContainerBoundrequirement {
+  container: Reference;
+  requiredModes: Array<Modes>;
+}
+export type Requirement = ClassFileRequirement | PodWideRequirement | ContainerBoundrequirement;
 
 export function isClassFileRequirement(r: Requirement): r is ClassFileRequirement {
   return (typeof (r as ClassFileRequirement).forClass !== 'undefined');
 }
 export function isPodWideRequirement(r: Requirement): r is PodWideRequirement {
   return (typeof (r as PodWideRequirement).podWidePemissions !== 'undefined');
+}
+export function isContainerBoundRequirement(r: Requirement): r is ContainerBoundrequirement {
+  return (typeof (r as ContainerBoundrequirement).container !== 'undefined');
 }
 /**
  * This can be used to have TypeScript warn you when another type is added to [[Requirement]]
@@ -68,6 +75,10 @@ export const availableApps: Listing[] = [
     requirements: [
       {
         podWidePemissions: [acl.Read, acl.Append, acl.Write, acl.Control],
+      },
+      {
+        container: 'tictactoe',
+        requiredModes: [acl.Read, acl.Append, acl.Write, acl.Control],
       },
     ],
   },
