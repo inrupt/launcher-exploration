@@ -36,7 +36,7 @@ async function initialiseClassFile (origin: string, requirements: ClassFileRequi
 
   const aclParties: AclParty[] = [
     { type: 'webid', modes: [acl.Read, acl.Write, acl.Control], webid: webId },
-    { type: 'app', modes: [acl.Read, acl.Write], origin: origin },
+    { type: 'app', modes: [acl.Read, acl.Write], origin: origin, webid: webId },
   ];
   if (requirements.public) {
     aclParties.push({ type: 'public', modes: [acl.Read] });

@@ -5,7 +5,7 @@ import { Modes } from '../../availableApps';
 export type AclParty = 
     { type: 'public', modes: Modes[] } |
     { type: 'webid', modes: Modes[], webid: string } |
-    { type: 'app', modes: Modes[], origin: string };
+    { type: 'app', modes: Modes[], origin: string, webid: string };
 
 export async function addAppToAcl (
   document: TripleDocument,
@@ -45,6 +45,7 @@ export async function addAppToAcl (
       authorizationSubject.addRef(acl.agent, party.webid);
     } else if (party.type === 'app') {
       authorizationSubject.addRef(acl.origin, party.origin);
+      authorizationSubject.addRef(acl.agent, party.webid);
     }
   });
 
@@ -62,7 +63,11 @@ function isParty(partyToAdd: AclParty): (existingParty: TripleSubject) => boolea
     if (partyToAdd.type === 'webid' && existingParty.getRef(acl.agent) === partyToAdd.webid) {
       hasParty = true;
     }
-    if (partyToAdd.type === 'app' && existingParty.getRef(acl.origin) === partyToAdd.origin) {
+    if (
+      partyToAdd.type === 'app' &&
+      existingParty.getRef(acl.origin) === partyToAdd.origin &&
+      existingParty.getRef(acl.agent) === partyToAdd.webid
+    ) {
       hasParty = true;
     }
     return hasModes && hasParty;
