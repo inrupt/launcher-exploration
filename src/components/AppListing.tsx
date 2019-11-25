@@ -98,9 +98,12 @@ function getHumanReadableRequirements(requirement: Requirement): JSX.Element[] {
         <>Add new data to your Pod</>,
       ];
     }
-    return [
-      <>Read all data in your Pod.</>,
-    ];
+    if (requirement.podWidePemissions.includes(acl.Read)) {
+      return [
+        <>Read all data in your Pod.</>,
+      ];
+    }
+    return [];
   }
 
   return isExhaustive(requirement);
