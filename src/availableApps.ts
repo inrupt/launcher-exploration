@@ -48,6 +48,9 @@ export const availableApps: Listing[] = [
     launchUrl: 'https://notepod.vincenttunru.com/',
     requirements: [
       {
+        podWidePemissions: [],
+      },
+      {
         forClass: schema.TextDigitalDocument,
         requiredModes: [acl.Read, acl.Append, acl.Write],
         defaultFilename: 'notes',
@@ -60,6 +63,9 @@ export const availableApps: Listing[] = [
     tagline: 'Private bookmarking',
     launchUrl: 'https://poddit.app',
     requirements: [
+      {
+        podWidePemissions: [],
+      },
       {
         forClass: 'http://www.w3.org/2002/01/bookmark#Bookmark',
         requiredModes: [acl.Read, acl.Append, acl.Write],

@@ -64,8 +64,6 @@ async function initialiseClassFile (origin: string, requirements: ClassFileRequi
   const currentSession: SolidAuthSession = await SolidAuth.currentSession() || (() => {throw new Error('not logged in!')})();
   const webId: string = currentSession.webId;
 
-  await addTrustedApp(webId, origin, []);
-
   const webIdDoc: TripleDocument = await fetchDocument(webId) || (() => {throw new Error('no webIdDoc!')})();
   const profile: TripleSubject = webIdDoc.getSubject(webId) || (() => {throw new Error('no profile!')})();
 
