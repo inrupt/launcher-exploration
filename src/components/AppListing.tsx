@@ -74,12 +74,12 @@ function getHumanReadableRequirements(requirement: Requirement): JSX.Element[] {
   if (isContainerBoundRequirement(requirement)) {
     if (requirement.requiredModes.includes(acl.Write) || requirement.requiredModes.includes(acl.Control)) {
       return [
-        <>Change and delete all data in the folder <code>{requirement.container}</code> on your Pod</>,
+        <>Change and delete all data in the folder <code>{requirement.container}</code> on your Pod.</>,
       ];
     }
     if (requirement.requiredModes.includes(acl.Append)) {
       return [
-        <>Add new data in the folder <code>{requirement.container}</code> on your Pod</>,
+        <>Add new data in the folder <code>{requirement.container}</code> on your Pod.</>,
       ];
     }
     return [
@@ -90,12 +90,12 @@ function getHumanReadableRequirements(requirement: Requirement): JSX.Element[] {
   if (isPodWideRequirement(requirement)) {
     if (requirement.podWidePemissions.includes(acl.Write) || requirement.podWidePemissions.includes(acl.Control)) {
       return [
-        <>Change and delete all data in your Pod</>,
+        <>Change and delete all data in your Pod.</>,
       ];
     }
     if (requirement.podWidePemissions.includes(acl.Append)) {
       return [
-        <>Add new data to your Pod</>,
+        <>Add new data to your Pod.</>,
       ];
     }
     if (requirement.podWidePemissions.includes(acl.Read)) {
