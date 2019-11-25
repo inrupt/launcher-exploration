@@ -88,4 +88,14 @@ export const availableApps: Listing[] = [
       },
     ],
   },
+  {
+    name: 'Focus',
+    tagline: 'Solid Task Manager',
+    launchUrl: 'https://noeldemartin.github.io/solid-focus/',
+    requirements: [
+      {
+        podWidePemissions: [acl.Read, acl.Append, acl.Write, acl.Control],
+      },
+    ],
+  },
 ];
