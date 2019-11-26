@@ -4,7 +4,8 @@ import { LoggedOut } from '@solid/react';
 import { Listing, Requirement, isClassFileRequirement, isPodWideRequirement, isExhaustive, isContainerBoundRequirement } from '../availableApps';
 import { Screenshot } from './Screenshot';
 import { LaunchButton } from './LaunchButton';
-import { acl } from 'rdf-namespaces';
+import { acl, schema, rdfs } from 'rdf-namespaces';
+import { Reference, fetchDocument } from 'tripledoc';
 
 interface Props {
   listing: Listing;
@@ -58,16 +59,16 @@ function getHumanReadableRequirements(requirement: Requirement): JSX.Element[] {
   if (isClassFileRequirement(requirement)) {
     if (requirement.requiredModes.includes(acl.Write) || requirement.requiredModes.includes(acl.Control)) {
       return [
-        <>Manage data of <abbr title={requirement.forClass}>a specific type</abbr> in your Pod.</>,
+        <>Manage {getHumanReadableClassLabel(requirement.forClass)} in your Pod.</>,
       ];
     }
     if (requirement.requiredModes.includes(acl.Append)) {
       return [
-        <>Add new data of <abbr title={requirement.forClass}>a specific type</abbr> in your Pod.</>,
+        <>Add new {getHumanReadableClassLabel(requirement.forClass)} in your Pod.</>,
       ];
     }
     return [
-      <>Read data of <abbr title={requirement.forClass}>a specific type</abbr> in your Pod.</>,
+      <>Read {getHumanReadableClassLabel(requirement.forClass)} in your Pod.</>,
     ];
   }
 
@@ -107,4 +108,28 @@ function getHumanReadableRequirements(requirement: Requirement): JSX.Element[] {
   }
 
   return isExhaustive(requirement);
+}
+
+function getHumanReadableClassLabel(forClass: Reference): JSX.Element {
+  if (forClass === 'http://www.w3.org/2002/01/bookmark#Bookmark') {
+    return <abbr title={forClass}>bookmarks</abbr>;
+  }
+  if (forClass === schema.TextDigitalDocument) {
+    return <abbr title={forClass}>text files</abbr>;
+  }
+
+  return <>data of <abbr title={forClass}>a specific type</abbr></>;
+}
+
+// We could fetch the actually readable name, but that would require more async data fetching.
+// Hence, we're just using hardcoded aliases for now.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+async function getClassLabel(forClass: Reference) {
+  try {
+    const vocab = await fetchDocument(forClass);
+    const definition = vocab.getSubject(forClass);
+    return definition.getString(rdfs.label);
+  } catch (e) {
+    return null;
+  }
 }
