@@ -4,7 +4,7 @@ git checkout origin/master
 git checkout -b prepare_deploy
 # The `prepare_deploy` branch should merge cleanly into `deploy`,
 # but not contain any of its unmerged changes:
-git merge --strategy=ours deploy
+git merge -m "Discard old builds" --strategy=ours deploy
 git checkout deploy
 git merge prepare_deploy
 npm run build
@@ -15,4 +15,4 @@ cd ..
 git add --force build
 git commit --no-verify -am"build"
 git push 5apps deploy:master
-git checkout -
+git checkout master
