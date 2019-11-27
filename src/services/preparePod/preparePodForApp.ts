@@ -23,7 +23,7 @@ export async function preparePodForApp(origin: string, requirements: Requirement
 async function initialiseTrustedApps (origin: string, requirements: PodWideRequirement) {
   const currentSession: SolidAuthSession = await SolidAuth.currentSession() || (() => {throw new Error('not logged in!')})();
   const webId: string = currentSession.webId;
-  await addTrustedApp(webId, origin, requirements.podWidePemissions);
+  await addTrustedApp(webId, origin, requirements.podWidePermissions);
 }
 
 async function intialiseContainer (origin: Reference, requirements: ContainerBoundrequirement) {
