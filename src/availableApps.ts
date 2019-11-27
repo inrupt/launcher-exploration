@@ -9,7 +9,7 @@ export interface ClassFileRequirement {
   defaultFilename: string;
 };
 export interface PodWideRequirement {
-  podWidePemissions: Array<Modes>;
+  podWidePermissions: Array<Modes>;
 }
 export interface ContainerBoundrequirement {
   container: Reference;
@@ -21,7 +21,7 @@ export function isClassFileRequirement(r: Requirement): r is ClassFileRequiremen
   return (typeof (r as ClassFileRequirement).forClass !== 'undefined');
 }
 export function isPodWideRequirement(r: Requirement): r is PodWideRequirement {
-  return (typeof (r as PodWideRequirement).podWidePemissions !== 'undefined');
+  return (typeof (r as PodWideRequirement).podWidePermissions !== 'undefined');
 }
 export function isContainerBoundRequirement(r: Requirement): r is ContainerBoundrequirement {
   return (typeof (r as ContainerBoundrequirement).container !== 'undefined');
@@ -48,7 +48,7 @@ export const availableApps: Listing[] = [
     launchUrl: 'https://notepod.vincenttunru.com/',
     requirements: [
       {
-        podWidePemissions: [],
+        podWidePermissions: [],
       },
       {
         forClass: schema.TextDigitalDocument,
@@ -64,7 +64,7 @@ export const availableApps: Listing[] = [
     launchUrl: 'https://poddit.app',
     requirements: [
       {
-        podWidePemissions: [],
+        podWidePermissions: [],
       },
       {
         forClass: 'http://www.w3.org/2002/01/bookmark#Bookmark',
@@ -80,7 +80,7 @@ export const availableApps: Listing[] = [
     launchUrl: 'https://generator.inrupt.com/',
     requirements: [
       {
-        podWidePemissions: [acl.Read, acl.Append, acl.Write, acl.Control],
+        podWidePermissions: [acl.Read, acl.Append, acl.Write, acl.Control],
       },
       {
         container: 'tictactoe',
@@ -94,7 +94,7 @@ export const availableApps: Listing[] = [
     launchUrl: 'https://noeldemartin.github.io/solid-focus/',
     requirements: [
       {
-        podWidePemissions: [acl.Read, acl.Append, acl.Write, acl.Control],
+        podWidePermissions: [acl.Read, acl.Append, acl.Write, acl.Control],
       },
     ],
   },

@@ -1,0 +1,443 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`with mixed types of permission requests tells the user when multiple modes are required 1`] = `
+Array [
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Read all data in your Pod.
+    </p>
+  </li>,
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Change who has access to the folder 
+      <code>
+        arbitrary-container
+      </code>
+       on your Pod.
+    </p>
+  </li>,
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Delete data from the folder 
+      <code>
+        arbitrary-container
+      </code>
+       on your Pod.
+    </p>
+  </li>,
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Add new data in the folder 
+      <code>
+        arbitrary-container
+      </code>
+       on your Pod.
+    </p>
+  </li>,
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Read all data in the folder 
+      <code>
+        arbitrary-container
+      </code>
+       on your Pod.
+    </p>
+  </li>,
+]
+`;
+
+exports[`with mixed types of permission requests tells the user when only one mode for every type of permission is required 1`] = `
+Array [
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Read all data in your Pod.
+    </p>
+  </li>,
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Add new data in the folder 
+      <code>
+        arbitrary-container
+      </code>
+       on your Pod.
+    </p>
+  </li>,
+]
+`;
+
+exports[`with permission requests for a specific class of data correctly lists all requested permissions when combined 1`] = `
+Array [
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Change who has access to 
+      data of 
+      <abbr
+        title="http://schema.org/Movie"
+      >
+        a specific type
+      </abbr>
+       in your Pod.
+    </p>
+  </li>,
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Delete 
+      data of 
+      <abbr
+        title="http://schema.org/Movie"
+      >
+        a specific type
+      </abbr>
+       from your Pod.
+    </p>
+  </li>,
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Add new 
+      data of 
+      <abbr
+        title="http://schema.org/Movie"
+      >
+        a specific type
+      </abbr>
+       in your Pod.
+    </p>
+  </li>,
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Read 
+      data of 
+      <abbr
+        title="http://schema.org/Movie"
+      >
+        a specific type
+      </abbr>
+       in your Pod.
+    </p>
+  </li>,
+]
+`;
+
+exports[`with permission requests for a specific class of data tells the user when only append permissions are required 1`] = `
+Array [
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Add new 
+      data of 
+      <abbr
+        title="http://schema.org/Movie"
+      >
+        a specific type
+      </abbr>
+       in your Pod.
+    </p>
+  </li>,
+]
+`;
+
+exports[`with permission requests for a specific class of data tells the user when only control permissions are required 1`] = `
+Array [
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Change who has access to 
+      data of 
+      <abbr
+        title="http://schema.org/Movie"
+      >
+        a specific type
+      </abbr>
+       in your Pod.
+    </p>
+  </li>,
+]
+`;
+
+exports[`with permission requests for a specific class of data tells the user when only read permissions are required 1`] = `
+Array [
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Read 
+      data of 
+      <abbr
+        title="http://schema.org/Movie"
+      >
+        a specific type
+      </abbr>
+       in your Pod.
+    </p>
+  </li>,
+]
+`;
+
+exports[`with permission requests for a specific class of data tells the user when only write permissions are required 1`] = `
+Array [
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Delete 
+      data of 
+      <abbr
+        title="http://schema.org/Movie"
+      >
+        a specific type
+      </abbr>
+       from your Pod.
+    </p>
+  </li>,
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Add new 
+      data of 
+      <abbr
+        title="http://schema.org/Movie"
+      >
+        a specific type
+      </abbr>
+       in your Pod.
+    </p>
+  </li>,
+]
+`;
+
+exports[`with permission requests for a specific folder correctly lists all requested permissions when combined 1`] = `
+Array [
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Change who has access to the folder 
+      <code>
+        arbitrary-container
+      </code>
+       on your Pod.
+    </p>
+  </li>,
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Delete data from the folder 
+      <code>
+        arbitrary-container
+      </code>
+       on your Pod.
+    </p>
+  </li>,
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Add new data in the folder 
+      <code>
+        arbitrary-container
+      </code>
+       on your Pod.
+    </p>
+  </li>,
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Read all data in the folder 
+      <code>
+        arbitrary-container
+      </code>
+       on your Pod.
+    </p>
+  </li>,
+]
+`;
+
+exports[`with permission requests for a specific folder tells the user when only append permissions are required 1`] = `
+Array [
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Add new data in the folder 
+      <code>
+        arbitrary-container
+      </code>
+       on your Pod.
+    </p>
+  </li>,
+]
+`;
+
+exports[`with permission requests for a specific folder tells the user when only control permissions are required 1`] = `
+Array [
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Change who has access to the folder 
+      <code>
+        arbitrary-container
+      </code>
+       on your Pod.
+    </p>
+  </li>,
+]
+`;
+
+exports[`with permission requests for a specific folder tells the user when only read permissions are required 1`] = `
+Array [
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Read all data in the folder 
+      <code>
+        arbitrary-container
+      </code>
+       on your Pod.
+    </p>
+  </li>,
+]
+`;
+
+exports[`with permission requests for a specific folder tells the user when only write permissions are required 1`] = `
+Array [
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Delete data from the folder 
+      <code>
+        arbitrary-container
+      </code>
+       on your Pod.
+    </p>
+  </li>,
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Add new data in the folder 
+      <code>
+        arbitrary-container
+      </code>
+       on your Pod.
+    </p>
+  </li>,
+]
+`;
+
+exports[`with permission requests for the entire Pod correctly lists all requested permissions when combined 1`] = `
+Array [
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Change who has access to any data in your Pod.
+    </p>
+  </li>,
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Delete any data from your Pod.
+    </p>
+  </li>,
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Add new data to your Pod.
+    </p>
+  </li>,
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Read all data in your Pod.
+    </p>
+  </li>,
+]
+`;
+
+exports[`with permission requests for the entire Pod tells the user when only append permissions are required 1`] = `
+Array [
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Add new data to your Pod.
+    </p>
+  </li>,
+]
+`;
+
+exports[`with permission requests for the entire Pod tells the user when only control permissions are required 1`] = `
+Array [
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Change who has access to any data in your Pod.
+    </p>
+  </li>,
+]
+`;
+
+exports[`with permission requests for the entire Pod tells the user when only read permissions are required 1`] = `
+Array [
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Read all data in your Pod.
+    </p>
+  </li>,
+]
+`;
+
+exports[`with permission requests for the entire Pod tells the user when only write permissions are required 1`] = `
+Array [
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Delete any data from your Pod.
+    </p>
+  </li>,
+  <li>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Add new data to your Pod.
+    </p>
+  </li>,
+]
+`;

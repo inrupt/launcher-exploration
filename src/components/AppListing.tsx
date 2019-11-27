@@ -57,56 +57,83 @@ export const AppListing: React.FC<Props> = (props: Props) => {
 
 function getHumanReadableRequirements(requirement: Requirement): JSX.Element[] {
   if (isClassFileRequirement(requirement)) {
-    if (requirement.requiredModes.includes(acl.Write) || requirement.requiredModes.includes(acl.Control)) {
-      return [
-        <>Manage {getHumanReadableClassLabel(requirement.forClass)} in your Pod.</>,
-      ];
+    const classLabel = getHumanReadableClassLabel(requirement.forClass);
+    const reqs: JSX.Element[] = [];
+    if (requirement.requiredModes.includes(acl.Control)) {
+      reqs.push(
+        <>Change who has access to {classLabel} in your Pod.</>,
+      );
     }
-    if (requirement.requiredModes.includes(acl.Append)) {
-      return [
-        <>Add new {getHumanReadableClassLabel(requirement.forClass)} in your Pod.</>,
-      ];
+    if (requirement.requiredModes.includes(acl.Write)) {
+      reqs.push(
+        <>Delete {classLabel} from your Pod.</>,
+      );
     }
-    return [
-      <>Read {getHumanReadableClassLabel(requirement.forClass)} in your Pod.</>,
-    ];
+    if (requirement.requiredModes.includes(acl.Write) || requirement.requiredModes.includes(acl.Append)) {
+      reqs.push(
+        <>Add new {classLabel} in your Pod.</>,
+      );
+    }
+    if (requirement.requiredModes.includes(acl.Read)) {
+      reqs.push(
+        <>Read {classLabel} in your Pod.</>,
+      );
+    }
+    return reqs;
   }
 
   if (isContainerBoundRequirement(requirement)) {
-    if (requirement.requiredModes.includes(acl.Write) || requirement.requiredModes.includes(acl.Control)) {
-      return [
-        <>Change and delete all data in the folder <code>{requirement.container}</code> on your Pod.</>,
-      ];
+    const reqs: JSX.Element[] = [];
+    if (requirement.requiredModes.includes(acl.Control)) {
+      reqs.push(
+        <>Change who has access to the folder <code>{requirement.container}</code> on your Pod.</>,
+      );
     }
-    if (requirement.requiredModes.includes(acl.Append)) {
-      return [
+    if (requirement.requiredModes.includes(acl.Write)) {
+      reqs.push(
+        <>Delete data from the folder <code>{requirement.container}</code> on your Pod.</>,
+      );
+    }
+    if (requirement.requiredModes.includes(acl.Write) || requirement.requiredModes.includes(acl.Append)) {
+      reqs.push(
         <>Add new data in the folder <code>{requirement.container}</code> on your Pod.</>,
-      ];
+      );
     }
-    return [
-      <>Read all data in the folder <code>{requirement.container}</code> on your Pod.</>,
-    ];
+    if (requirement.requiredModes.includes(acl.Read)) {
+      reqs.push(
+        <>Read all data in the folder <code>{requirement.container}</code> on your Pod.</>,
+      );
+    }
+    return reqs;
   }
 
+  // istanbul ignore else [TypeScript will tell use when we're not exhaustive, so this should never be reached]
   if (isPodWideRequirement(requirement)) {
-    if (requirement.podWidePemissions.includes(acl.Write) || requirement.podWidePemissions.includes(acl.Control)) {
-      return [
-        <>Change and delete all data in your Pod.</>,
-      ];
+    const reqs: JSX.Element[] = [];
+    if (requirement.podWidePermissions.includes(acl.Control)) {
+      reqs.push(
+        <>Change who has access to any data in your Pod.</>,
+      );
     }
-    if (requirement.podWidePemissions.includes(acl.Append)) {
-      return [
+    if (requirement.podWidePermissions.includes(acl.Write)) {
+      reqs.push(
+        <>Delete any data from your Pod.</>,
+      );
+    }
+    if (requirement.podWidePermissions.includes(acl.Write) || requirement.podWidePermissions.includes(acl.Append)) {
+      reqs.push(
         <>Add new data to your Pod.</>,
-      ];
+      );
     }
-    if (requirement.podWidePemissions.includes(acl.Read)) {
-      return [
+    if (requirement.podWidePermissions.includes(acl.Read)) {
+      reqs.push(
         <>Read all data in your Pod.</>,
-      ];
+      );
     }
-    return [];
+    return reqs;
   }
 
+  // istanbul ignore next [TypeScript will tell use when we're not exhaustive, so this should never be reached]
   return isExhaustive(requirement);
 }
 
@@ -123,7 +150,7 @@ function getHumanReadableClassLabel(forClass: Reference): JSX.Element {
 
 // We could fetch the actually readable name, but that would require more async data fetching.
 // Hence, we're just using hardcoded aliases for now.
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// istanbul ignore next eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function getClassLabel(forClass: Reference) {
   try {
     const vocab = await fetchDocument(forClass);
