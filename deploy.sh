@@ -1,4 +1,4 @@
-git branch -d prepare_deploy
+git branch --delete --force prepare_deploy
 git fetch origin
 git checkout origin/master
 git checkout -b prepare_deploy
