@@ -1,6 +1,12 @@
-git checkout deploy
+git branch -d prepare_deploy
 git fetch origin
-git merge origin/master
+git checkout origin/master
+git checkout -b prepare_deploy
+# The `prepare_deploy` branch should merge cleanly into `deploy`,
+# but not contain any of its unmerged changes:
+git merge --strategy=ours deploy
+git checkout deploy
+git merge prepare_deploy
 npm run build
 cd build
 ln -s index.html 404.html
