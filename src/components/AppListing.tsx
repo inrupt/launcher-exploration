@@ -150,7 +150,8 @@ function getHumanReadableClassLabel(forClass: Reference): JSX.Element {
 
 // We could fetch the actually readable name, but that would require more async data fetching.
 // Hence, we're just using hardcoded aliases for now.
-// istanbul ignore next eslint-disable-next-line @typescript-eslint/no-unused-vars
+// istanbul ignore next
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function getClassLabel(forClass: Reference) {
   try {
     const vocab = await fetchDocument(forClass);

@@ -10,6 +10,7 @@ interface Props {
 };
 
 export const LaunchButton: React.FC<Props> = (props) => {
+  const [isLaunching, setIsLaunching] = React.useState(false);
   const webId = useWebId();
   if (!props.listing.requirements || props.listing.requirements.length === 0) {
     return (
@@ -32,6 +33,7 @@ export const LaunchButton: React.FC<Props> = (props) => {
   };
   const launch = async (listing: Listing) => {
     if (props.listing.requirements) {
+      setIsLaunching(true);
       const origin = new URL(listing.launchUrl).origin;
       await Promise.all(props.listing.requirements.map(requirement => preparePodForApp(origin, requirement)));
     }
@@ -41,6 +43,7 @@ export const LaunchButton: React.FC<Props> = (props) => {
       urlToRedirectTo.searchParams.append('webid', webId);
     }
     document.location.href = urlToRedirectTo.href;
+    setIsLaunching(false);
   }
 
   return (
@@ -53,7 +56,7 @@ export const LaunchButton: React.FC<Props> = (props) => {
           color="primary"
           variant="contained"
         >
-          Connect and launch
+          {isLaunching ? 'Launching…' : 'Connect and launch'}
         </Button>
       </LoggedOut>
       <LoggedIn>
@@ -65,7 +68,7 @@ export const LaunchButton: React.FC<Props> = (props) => {
           color="primary"
           variant="contained"
         >
-          Allow and launch
+          {isLaunching ? 'Launching…' : 'Allow and launch'}
         </Button>
       </LoggedIn>
     </>
