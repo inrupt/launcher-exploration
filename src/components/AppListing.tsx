@@ -1,5 +1,6 @@
 import React from 'react';
-import { Card, CardHeader, CardActions,  Typography, CardContent, Button } from '@material-ui/core';
+import { Card, CardHeader, CardActions,  Typography, CardContent, Button, Chip } from '@material-ui/core';
+import DoneIcon from '@material-ui/icons/Done';
 import { LoggedOut } from '@solid/react';
 import { Listing, Requirement, isClassFileRequirement, isPodWideRequirement, isExhaustive, isContainerBoundRequirement } from '../availableApps';
 import { Screenshot } from './Screenshot';
@@ -9,6 +10,7 @@ import { Reference, fetchDocument } from 'tripledoc';
 
 interface Props {
   listing: Listing;
+  usedBefore: boolean;
 };
 
 export const AppListing: React.FC<Props> = (props: Props) => {
@@ -35,10 +37,14 @@ export const AppListing: React.FC<Props> = (props: Props) => {
       </ul>
     </>);
 
+  const title = (props.usedBefore)
+    ? <>{props.listing.name} <DoneIcon/></>
+    : props.listing.name;
+
   return (
     <Card>
       <Screenshot id={props.listing.screenshot}/>
-      <CardHeader title={props.listing.name} subheader={props.listing.tagline}/>
+      <CardHeader title={title} subheader={props.listing.tagline}/>
       <CardContent>
         {requirementsOverview}
       </CardContent>
