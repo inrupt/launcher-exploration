@@ -1,9 +1,8 @@
 import React from 'react';
-import { Card, CardHeader, CardActions,  Typography, CardContent, Button, Chip } from '@material-ui/core';
+import { Card, CardHeader, CardActions,  Typography, CardContent, Button } from '@material-ui/core';
 import DoneIcon from '@material-ui/icons/Done';
 import { LoggedOut } from '@solid/react';
 import { Listing, Requirement, isClassFileRequirement, isPodWideRequirement, isExhaustive, isContainerBoundRequirement } from '../availableApps';
-import { Screenshot } from './Screenshot';
 import { LaunchButton } from './LaunchButton';
 import { acl, schema, rdfs } from 'rdf-namespaces';
 import { Reference, fetchDocument } from 'tripledoc';
@@ -43,7 +42,6 @@ export const AppListing: React.FC<Props> = (props: Props) => {
 
   return (
     <Card>
-      <Screenshot id={props.listing.screenshot}/>
       <CardHeader title={title} subheader={props.listing.tagline}/>
       <CardContent>
         {requirementsOverview}

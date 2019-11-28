@@ -37,7 +37,6 @@ export interface Listing {
   launchUrl: string;
   name: string;
   tagline: string;
-  screenshot?: string;
   requirements?: Requirement[];
 };
 
