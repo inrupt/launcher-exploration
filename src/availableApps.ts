@@ -1,11 +1,6 @@
 import { Reference, TripleDocument, TripleSubject, createDocument } from 'tripledoc';
 import { acl, schema, solid, rdf } from 'rdf-namespaces';
-import { publicTypeIndex, instance, TypeRegistration, forClass } from 'rdf-namespaces/dist/solid';
-import { description } from 'rdf-namespaces/dist/cal';
-import { type } from 'os';
-import { subClassOf } from 'rdf-namespaces/dist/rdfs';
 import { getDocument } from './services/documentCache';
-import { string } from 'prop-types';
 
 const pim = {
   storage: 'http://www.w3.org/ns/pim/space#storage'
