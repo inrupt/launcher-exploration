@@ -14,14 +14,14 @@
     "@types/react-dom": "^16.9.4",
     "@types/solid-auth-client": "^2.3.1",
     "@types/solid__react": "^1.6.1",
+    "plandoc": "0.0.1-master-397060610-75f2184e",
     "rdf-namespaces": "^1.6.0",
     "react": "^16.10.1",
     "react-dom": "^16.11.0",
-    "react-scripts": "^3.1.2",
+    "react-scripts": "^3.3.0",
     "solid-auth-client": "^2.3.1",
-    "tripledoc": "^3.0.1",
     "tripledoc-solid-helpers": "^0.1.2",
-    "typescript": "^3.6.3"
+    "typescript": "^3.7.4"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -4,8 +4,8 @@ import DoneIcon from '@material-ui/icons/Done';
 import { LoggedOut } from '@solid/react';
 import { Listing, Requirement, isClassFileRequirement, isPodWideRequirement, isExhaustive, isContainerBoundRequirement } from '../availableApps';
 import { LaunchButton } from './LaunchButton';
-import { acl, schema, rdfs } from 'rdf-namespaces';
-import { Reference, fetchDocument } from 'tripledoc';
+import { acl, schema } from 'rdf-namespaces';
+import { Reference } from 'plandoc';
 
 interface Props {
   listing: Listing;
@@ -150,18 +150,4 @@ function getHumanReadableClassLabel(forClass: Reference): JSX.Element {
   }
 
   return <>data of <abbr title={forClass}>a specific type</abbr></>;
-}
-
-// We could fetch the actually readable name, but that would require more async data fetching.
-// Hence, we're just using hardcoded aliases for now.
-// istanbul ignore next
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function getClassLabel(forClass: Reference) {
-  try {
-    const vocab = await fetchDocument(forClass);
-    const definition = vocab.getSubject(forClass);
-    return definition.getString(rdfs.label);
-  } catch (e) {
-    return null;
-  }
 }

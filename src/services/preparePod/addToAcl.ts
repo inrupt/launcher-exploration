@@ -1,4 +1,4 @@
-import { TripleDocument, fetchDocument, createDocument, TripleSubject } from 'tripledoc';
+import { TripleDocument, TripleSubject, LocalTripleDocument } from 'tripledoc';
 import { rdf, acl, foaf } from 'rdf-namespaces';
 import { Modes } from '../../availableApps';
 
@@ -8,24 +8,13 @@ export type AclParty =
     { type: 'app', modes: Modes[], origin: string, webid: string };
 
 export async function addAppToAcl (
-  document: TripleDocument,
+  aclDoc: LocalTripleDocument | TripleDocument,
+  forDocument: TripleDocument,
   parties: AclParty[],
 ) {
-  const aclRef = document.getAclRef();
-  if (!aclRef) {
-    throw new Error('ACL reference not found!');
-  }
-  let aclDoc: TripleDocument;
-  try {
-    aclDoc = await fetchDocument(aclRef);
-  } catch (e) {
-    aclDoc = createDocument(aclRef);
-  }
-  if (!aclDoc) {
-    throw new Error('could not create in-memory version of the ACL doc');
-  }
-
-  const listedParties = aclDoc.getSubjectsOfType(acl.Authorization);
+  const listedParties = (isStored(aclDoc))
+    ? aclDoc.getSubjectsOfType(acl.Authorization)
+    : [];
   parties.forEach((party) => {
     // Only add this party if it's not already listed in the ACL:
     if (listedParties.some(isParty(party))) {
@@ -35,7 +24,7 @@ export async function addAppToAcl (
     //       set the modes for the existing listing.
     const authorizationSubject = aclDoc.addSubject();
     authorizationSubject.addRef(rdf.type, acl.Authorization);
-    authorizationSubject.addRef(acl.accessTo, document.asRef());
+    authorizationSubject.addRef(acl.accessTo, forDocument.asRef());
     party.modes.forEach((mode) => {
       authorizationSubject.addRef(acl.mode, mode);
     });
@@ -72,4 +61,8 @@ function isParty(partyToAdd: AclParty): (existingParty: TripleSubject) => boolea
     }
     return hasModes && hasParty;
   };
+}
+
+function isStored(document: LocalTripleDocument | TripleDocument): document is TripleDocument {
+  return typeof (document as TripleDocument).getSubjectsOfType === 'function'
 }

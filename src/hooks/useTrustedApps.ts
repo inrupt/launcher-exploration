@@ -1,22 +1,25 @@
 import React from 'react';
-import { useWebId } from '@solid/react';
 import { getTrustedApps } from '../services/getTrustedApps';
 import { acl } from 'rdf-namespaces';
+import { PodContext } from '../PodData';
 
 export function useTrustedApps() {
   const [trustedAppOrigins, setTrustedApps] = React.useState<string[]>();
-  const webId = useWebId();
+  const podData = React.useContext(PodContext);
 
   React.useEffect(() => {
-    if (!webId) {
+    if (!podData) {
       return;
     }
 
-    getTrustedApps(webId).then((trustedApps) => {
+    getTrustedApps(podData).then((trustedApps) => {
+      if (trustedApps === null) {
+        return;
+      }
       const origins = trustedApps.map(trustedApp => trustedApp.getRef(acl.origin)).filter(isNotNull);
       setTrustedApps(origins);
     });
-  }, [webId]);
+  }, [podData]);
 
   return trustedAppOrigins;
 }

@@ -1,4 +1,4 @@
-import { Reference } from 'tripledoc';
+import { Reference } from 'plandoc';
 import { acl, schema } from 'rdf-namespaces';
 
 export type Modes = typeof acl.Read | typeof acl.Append | typeof acl.Write | typeof acl.Control;

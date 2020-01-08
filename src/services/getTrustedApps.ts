@@ -1,5 +1,5 @@
-import { getDocument } from './documentCache';
-import { Reference, TripleSubject } from 'tripledoc';
+import { Reference, describeSubject, describeSubjectList, fetchSubject, fetchSubjectList } from 'plandoc';
+import { PodData } from '../PodData';
 // import { acl } from 'rdf-namespaces';
 const acl = {
   trustedApp: 'http://www.w3.org/ns/auth/acl#trustedApp',
@@ -7,39 +7,46 @@ const acl = {
   origin: 'http://www.w3.org/ns/auth/acl#origin',
 };
 
-export async function getTrustedApps(webId: string) {
-  const profileDoc = await getDocument(webId);
-  const subject = profileDoc.getSubject(webId);
-  const trustedAppBlankNodes = subject.getAllLocalSubjects(acl.trustedApp);
-  const trustedAppNamedNodes = subject.getAllRefs(acl.trustedApp).map((ref) => profileDoc.getSubject(ref));
-  const trustedApps = trustedAppBlankNodes.concat(trustedAppNamedNodes);
+export async function getTrustedApps(podData: PodData) {
+  const virtualTrustedApps = describeSubjectList().isFoundOn(podData.profile, acl.trustedApp);
+  const trustedApps = await fetchSubjectList(virtualTrustedApps);
   return trustedApps;
 }
 
-export async function addTrustedApp(webId: string, appOrigin: string, modes: Reference[]) {
-  const alreadyTrustedApps = await getTrustedApps(webId);
-  if (alreadyTrustedApps.some(isTrustedApp(appOrigin, modes))) {
-    // Do not add this trusted app if it's already listed.
+export async function addTrustedApp(podData: PodData, appOrigin: string, modes: Reference[]) {
+  const virtualAppRegistration = describeSubject()
+    .isEnsuredIn(podData.profileDoc)
+    .withRef(acl.origin, appOrigin);
+
+  const appRegistration = await fetchSubject(virtualAppRegistration);
+
+  if (!appRegistration) {
+    throw new Error(`Could not add ${appOrigin} to the trusted app list.`);
+  }
+  const existingAllowedModes = appRegistration.getAllRefs(acl.mode);
+  if (
+    existingAllowedModes.every((mode) => modes.includes(mode)) &&
+    modes.every((mode) => existingAllowedModes.includes(mode))
+  ) {
+    // If the existing mode list is equal to the desired list,
+    // we assume that trusted apps have been set up properly earlier,
+    // so our job is done:
     return;
   }
 
-  // TODO: Set the correct modes if this origin is already listed, but with different modes
-  const profileDoc = await getDocument(webId);
-  const subject = profileDoc.getSubject(webId);
-  const trustNode = profileDoc.addSubject();
-  subject.addRef(acl.trustedApp, trustNode.asRef());
-  trustNode.addRef(acl.origin, appOrigin);
+  appRegistration.removeAll(acl.mode);
   modes.forEach((mode: string) => {
-    trustNode.addRef(acl.mode, mode);
+    appRegistration.addRef(acl.mode, mode);
   });
-  await profileDoc.save();
-}
 
-function isTrustedApp(appOrigin: string, modes: Reference[]) {
-  return (trustedApp: TripleSubject) => {
-    return (
-      trustedApp.getRef(acl.origin) === appOrigin &&
-      modes.every(mode => trustedApp.getAllRefs(acl.mode).includes(mode))
-    );
-  };
-};
+  const profile = await fetchSubject(podData.profile);
+  if (!profile) {
+    throw new Error('Could not read your profile.');
+  }
+  const trustedAppNamedNodes = profile.getAllRefs(acl.trustedApp);
+  if (!trustedAppNamedNodes.includes(appRegistration.asRef())) {
+    profile.addRef(acl.trustedApp, appRegistration.asRef());
+  }
+
+  await profile.getDocument().save([appRegistration, profile]);
+}
